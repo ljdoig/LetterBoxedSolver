@@ -1,0 +1,5 @@
+(executable
+ (public_name letter-boxed)
+ (name main)
+ (libraries  letter_boxed core core_unix.command_unix core_unix.filename_unix)
+ (preprocess (pps ppx_jane)))

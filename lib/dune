@@ -1,0 +1,3 @@
+(library
+ (name      letter_boxed)
+ (libraries core))
