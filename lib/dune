@@ -1,3 +1,5 @@
 (library
- (name      letter_boxed)
- (libraries core))
+ (name letter_boxed)
+ (libraries core)
+ (preprocess
+  (pps ppx_jane)))

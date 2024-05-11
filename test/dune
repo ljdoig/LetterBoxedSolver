@@ -1,0 +1,3 @@
+(test
+ (name letter_boxed_test)
+ (libraries letter_boxed ounit2))
