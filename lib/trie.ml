@@ -1,6 +1,7 @@
 open Core
 
 type t = { mutable is_leaf : bool; children : t option array }
+[@@deriving fields]
 
 let empty () = { is_leaf = false; children = Array.init 26 ~f:(fun _ -> None) }
 let char_to_index c = Char.to_int c - 97

@@ -2,4 +2,4 @@
  (name letter_boxed)
  (libraries core)
  (preprocess
-  (pps ppx_jane)))
+  (pps ppx_jane ppx_fields_conv)))
