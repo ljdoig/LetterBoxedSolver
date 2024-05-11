@@ -56,6 +56,7 @@ let load_trie filename groups =
   let chars = List.concat_map groups ~f:String.to_list |> Char.Set.of_list in
   let words =
     In_channel.with_file filename ~f:In_channel.input_lines
+    |> List.filter ~f:(fun s -> String.length s >= 3)
     |> List.map ~f:String.lowercase
     |> List.filter ~f:(String.for_all ~f:(Set.mem chars))
   in
