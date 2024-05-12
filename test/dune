@@ -1,3 +1,5 @@
 (test
  (name letter_boxed_test)
- (libraries letter_boxed ounit2))
+ (libraries letter_boxed core ounit2 core_unix.command_unix)
+ (preprocess
+  (pps ppx_jane ppx_fields_conv)))

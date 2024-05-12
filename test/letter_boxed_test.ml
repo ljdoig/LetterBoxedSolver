@@ -10,8 +10,15 @@ let test_trie words non_words : unit =
   assert (List.for_all ~f:(Trie.contains trie) words);
   assert (List.for_all ~f:(Fn.compose not (Trie.contains trie)) non_words)
 
+let test_solve ~filename ~groups ~max_len ~solutions:expected =
+  let solutions = solve ~filename ~groups ~max_len in
+  if not (List.equal (List.equal String.equal) expected solutions) then (
+    print_s
+      [%message (solutions : string list list) (expected : string list list)];
+    assert false)
+
 let suite =
-  "Sudoku Tests"
+  "Letter boxed tests"
   >::: [
          ( "Trie test 1" >:: fun _ ->
            test_trie
@@ -19,6 +26,26 @@ let suite =
              [ "ap"; "appl"; "x"; "c" ] );
          ("Trie test 2" >:: fun _ -> test_trie [] [ "a" ]);
          ("Trie test 3" >:: fun _ -> test_trie [ "" ] [ "a" ]);
+         ( "Solve test basic" >:: fun _ ->
+           test_solve ~filename:"1.txt" ~groups:"a b c" ~max_len:3
+             ~solutions:[ [ "abc" ] ] );
+         ( "Solve test multiple sols" >:: fun _ ->
+           test_solve ~filename:"2.txt" ~groups:"dko rjt snb auy" ~max_len:4
+             ~solutions:
+               [
+                 [ "krona"; "adjust"; "toby" ];
+                 [ "krona"; "adjust"; "turbary" ];
+                 [ "krona"; "adjust"; "tyrant"; "toby" ];
+                 [ "krona"; "adjust"; "tyrant"; "turbary" ];
+               ] );
+         ( "Solve test max_len 3" >:: fun _ ->
+           test_solve ~filename:"2.txt" ~groups:"dko rjt snb auy" ~max_len:3
+             ~solutions:
+               [
+                 [ "krona"; "adjust"; "toby" ]; [ "krona"; "adjust"; "turbary" ];
+               ] );
        ]
 
-let () = run_test_tt_main suite
+let () =
+  Sys_unix.chdir "../../../test/test_corpuses";
+  run_test_tt_main suite
