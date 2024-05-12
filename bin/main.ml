@@ -12,6 +12,7 @@ let command =
          (required Filename_unix.arg_type)
          ~doc:"FILENAME filename of permitted word list"
      in
-     fun () -> Letter_boxed.solve filename groups max_len)
+     fun () ->
+       Letter_boxed.(solve ~filename ~groups ~max_len |> print_sols ~max_len))
 
 let () = Command_unix.run ~version:"1.0" ~build_info:"letter-boxed" command

@@ -24,13 +24,12 @@ let solve' trie successors max_len =
   let rec traverse c subtrie letters words curr_word =
     let curr_word = c :: curr_word in
     if Trie.is_leaf subtrie then (
-      (* Check this word is actually useful *)
       let curr = unique_letters [ curr_word ] in
       let letters' = curr lor letters in
       let words = curr_word :: words in
       if letters' = goal then
         List.map words ~f:to_word |> List.rev |> Queue.enqueue sols
-      else if letters <> letters' && List.length words < max_len then
+      else if List.length words < max_len then
         Trie.child trie c
         |> Option.iter ~f:(fun subtrie -> traverse c subtrie letters' words []))
     else
@@ -56,39 +55,42 @@ let load_trie filename groups =
   let chars = List.concat_map groups ~f:String.to_list |> Char.Set.of_list in
   let words =
     In_channel.with_file filename ~f:In_channel.input_lines
-    |> List.filter ~f:(fun s -> String.length s >= 3)
-    |> List.map ~f:String.lowercase
     |> List.filter ~f:(String.for_all ~f:(Set.mem chars))
   in
-  (Trie.create words, List.length words)
+  match
+    List.find words ~f:(fun s ->
+        String.length s < 3 || String.(lowercase s <> s))
+  with
+  | None -> (Trie.create words, List.length words)
+  | Some bad_word ->
+      raise_s
+        [%message
+          "Corpus should be min length 3 and all lowercase" (bad_word : string)]
 
-let solve filename groups max_len =
+let solve ~filename ~groups ~max_len =
   let groups = String.lowercase groups |> String.split ~on:' ' in
-
   let trie, num_words = load_trie filename groups in
   Printf.sprintf "Loaded dictionary and filtered to relevant words (%d words)"
     num_words
   |> print_endline;
-
-  let solutions =
-    let successors =
-      match successors groups |> Char.Map.of_alist with
-      | `Ok successors -> successors
-      | `Duplicate_key char ->
-          raise_s [%message "Duplicate letter in groups" (char : char)]
-    in
-    solve' trie successors max_len
+  let successors =
+    match successors groups |> Char.Map.of_alist with
+    | `Ok successors -> successors
+    | `Duplicate_key char ->
+        raise_s [%message "Duplicate letter in groups" (char : char)]
   in
-  match solutions with
+  solve' trie successors max_len
+
+let print_sols ~max_len = function
   | [] ->
       Printf.sprintf "No solutions exist with %d words or fewer" max_len
       |> print_endline;
       print_endline "Consider increasing max solution size with -max flag"
-  | best :: _ ->
+  | best :: _ as sols ->
       let print_sol s = String.concat ~sep:" " s |> print_endline in
-      Printf.sprintf "Found %d solution(s) of max length %d:"
-        (List.length solutions) max_len
+      Printf.sprintf "Found %d solution(s) of max length %d:" (List.length sols)
+        max_len
       |> print_endline;
-      List.iter solutions ~f:print_sol;
+      List.iter sols ~f:print_sol;
       print_endline "\nBest solution:";
       print_sol best
