@@ -23,21 +23,20 @@ let solve' trie successors max_len =
   let sols = Queue.create () in
   let rec traverse c subtrie letters words curr_word =
     let curr_word = c :: curr_word in
-    if Trie.is_leaf subtrie then (
-      let curr = unique_letters [ curr_word ] in
-      let letters' = curr lor letters in
-      let words = curr_word :: words in
-      if letters' = goal then
-        List.map words ~f:to_word |> List.rev |> Queue.enqueue sols
-      else if List.length words < max_len then
-        Trie.child trie c
-        |> Option.iter ~f:(fun subtrie -> traverse c subtrie letters' words []))
-    else
-      Map.find_exn successors c
-      |> List.iter ~f:(fun c ->
-             let child = Trie.child subtrie c in
-             Option.iter child ~f:(fun subtrie ->
-                 traverse c subtrie letters words curr_word))
+    (if Trie.is_leaf subtrie then
+       let curr = unique_letters [ curr_word ] in
+       let letters' = curr lor letters in
+       let words = curr_word :: words in
+       if letters' = goal then
+         List.map words ~f:to_word |> List.rev |> Queue.enqueue sols
+       else if List.length words < max_len then
+         Trie.child trie c
+         |> Option.iter ~f:(fun subtrie -> traverse c subtrie letters' words []));
+    Map.find_exn successors c
+    |> List.iter ~f:(fun c ->
+           let child = Trie.child subtrie c in
+           Option.iter child ~f:(fun subtrie ->
+               traverse c subtrie letters words curr_word))
   in
   List.iter chars ~f:(fun c ->
       Trie.child trie c
