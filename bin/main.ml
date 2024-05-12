@@ -9,7 +9,7 @@ let command =
          ~doc:"INT maximum number of words in solution"
      and filename =
        flag "filename"
-         (required Filename_unix.arg_type)
+         (optional_with_default "corpuses/enable.txt" Filename_unix.arg_type)
          ~doc:"FILENAME filename of permitted word list"
      in
      fun () ->
