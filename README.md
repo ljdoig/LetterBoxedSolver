@@ -13,32 +13,30 @@ which will print all 7759 solutions of max length 3. Or you can filter to shorte
 $ ./letter_boxed.exe "dko rjt snb auy" -max 2
 Loaded dictionary and filtered to relevant words (2006 words)
 Found 2 solution(s) of max length 2:
-junks storyboard
 junks storyboards
+junks storyboard
 
-Best solution:
+Best solution out of 2:
 junks storyboard
 ```
 You can also pass your own word list if the [ENABLE](http://www.bananagrammer.com/2013/12/the-amazing-enable-word-list-project.html)
 wordlist is not to your liking:
 ```
 $ ./letter_boxed.exe "dko rjt snb auy" -max 2 -filename corpuses/scrabble.txt
-Loaded dictionary and filtered to relevant words (3232 words)
-Found 13 solution(s) of max length 2:
-adjusts skyborn
-juntos skyboard
-juntas skyboard
-jurants skyboard
-junks storyboard
-juntos skyboards
-juntas skyboards
-adjutants skyborn
-adjustors skyborn
-jurants skyboards
-junks storyboards
-adjutants skyboard
+Loaded dictionary and filtered to relevant words (3232 words)Found 13 solution(s) of max length 2:
 adjutants skyboards
-
-Best solution:
+adjutants skyboard
+junks storyboards
+jurants skyboards
+adjustors skyborn
+adjutants skyborn
+juntas skyboards
+juntos skyboards
+junks storyboard
+jurants skyboard
+juntas skyboard
+juntos skyboard
 adjusts skyborn
-```
+
+Best solution out of 13:
+adjusts skyborn

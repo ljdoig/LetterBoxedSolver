@@ -86,10 +86,10 @@ let print_sols ~max_len = function
       |> print_endline;
       print_endline "Consider increasing max solution size with -max flag"
   | best :: _ as sols ->
+      let n_sols = List.length sols in
       let print_sol s = String.concat ~sep:" " s |> print_endline in
-      Printf.sprintf "Found %d solution(s) of max length %d:" (List.length sols)
-        max_len
+      Printf.sprintf "Found %d solution(s) of max length %d:" n_sols max_len
       |> print_endline;
-      List.iter sols ~f:print_sol;
-      print_endline "\nBest solution:";
+      List.rev sols |> List.iter ~f:print_sol;
+      Printf.sprintf "\nBest solution out of %d:" n_sols |> print_endline;
       print_sol best
